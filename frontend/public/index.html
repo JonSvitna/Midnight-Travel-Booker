@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Midnight Travel Booker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: #e94560;
+        }
+
+        header p {
+            color: #a0a0a0;
+        }
+
+        .status-bar {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #4caf50;
+            animation: pulse 2s infinite;
+        }
+
+        .status-dot.offline {
+            background: #f44336;
+            animation: none;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .bookings-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .bookings-section h2 {
+            margin-bottom: 1.5rem;
+            color: #e94560;
+        }
+
+        .booking-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: transform 0.3s ease;
+        }
+
+        .booking-card:hover {
+            transform: translateX(10px);
+        }
+
+        .booking-info h3 {
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+
+        .booking-info p {
+            color: #a0a0a0;
+            font-size: 0.9rem;
+        }
+
+        .booking-status {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .booking-status.confirmed {
+            background: #4caf50;
+        }
+
+        .booking-status.pending {
+            background: #ff9800;
+        }
+
+        .form-section {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 2rem;
+        }
+
+        .form-section h2 {
+            margin-bottom: 1.5rem;
+            color: #e94560;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #a0a0a0;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus {
+            outline: 2px solid #e94560;
+        }
+
+        button {
+            background: #e94560;
+            color: #fff;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: #d63050;
+        }
+
+        button:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+
+        .message {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 10px;
+        }
+
+        .message.success {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid #4caf50;
+        }
+
+        .message.error {
+            background: rgba(244, 67, 54, 0.2);
+            border: 1px solid #f44336;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌙 Midnight Travel Booker</h1>
+            <p>Automate your travel bookings with ease</p>
+        </header>
+
+        <div class="status-bar">
+            <div class="status-indicator">
+                <div class="status-dot" id="statusDot"></div>
+                <span id="statusText">Checking API connection...</span>
+            </div>
+            <span id="apiUrl"></span>
+        </div>
+
+        <div class="bookings-section">
+            <h2>📋 Your Bookings</h2>
+            <div id="bookingsList">
+                <p>Loading bookings...</p>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h2>✈️ New Booking</h2>
+            <form id="bookingForm">
+                <div class="form-group">
+                    <label for="destination">Destination</label>
+                    <input type="text" id="destination" name="destination" placeholder="Enter destination" required>
+                </div>
+                <div class="form-group">
+                    <label for="date">Travel Date</label>
+                    <input type="date" id="date" name="date" required>
+                </div>
+                <button type="submit" id="submitBtn">Book Now</button>
+            </form>
+            <div id="formMessage"></div>
+        </div>
+
+        <footer>
+            <p>Midnight Travel Booker &copy; 2025</p>
+        </footer>
+    </div>
+
+    <script>
+        // API URL - will be fetched from server config or use default
+        let API_URL = 'http://localhost:3001';
+
+        // Initialize the application
+        async function init() {
+            // Try to get config from server (for production)
+            if (window.location.hostname !== 'localhost') {
+                try {
+                    const configResponse = await fetch('/api/config');
+                    if (configResponse.ok) {
+                        const config = await configResponse.json();
+                        API_URL = config.backendUrl;
+                    }
+                } catch (e) {
+                    console.log('Using default backend URL');
+                }
+            }
+            
+            document.getElementById('apiUrl').textContent = `API: ${API_URL}`;
+            
+            // Initialize the app
+            checkHealth();
+            loadBookings();
+            
+            // Periodically check health
+            setInterval(checkHealth, 30000);
+        }
+
+        // Check API health
+        async function checkHealth() {
+            const statusDot = document.getElementById('statusDot');
+            const statusText = document.getElementById('statusText');
+            
+            try {
+                const response = await fetch(`${API_URL}/api/health`);
+                if (response.ok) {
+                    statusDot.classList.remove('offline');
+                    statusText.textContent = 'API Connected';
+                } else {
+                    throw new Error('API not responding');
+                }
+            } catch (error) {
+                statusDot.classList.add('offline');
+                statusText.textContent = 'API Offline';
+            }
+        }
+
+        // Fetch and display bookings
+        async function loadBookings() {
+            const bookingsList = document.getElementById('bookingsList');
+            
+            try {
+                const response = await fetch(`${API_URL}/api/bookings`);
+                const data = await response.json();
+                
+                if (data.bookings && data.bookings.length > 0) {
+                    bookingsList.innerHTML = data.bookings.map(booking => `
+                        <div class="booking-card">
+                            <div class="booking-info">
+                                <h3>${booking.destination}</h3>
+                                <p>📅 ${booking.date}</p>
+                            </div>
+                            <span class="booking-status ${booking.status}">${booking.status}</span>
+                        </div>
+                    `).join('');
+                } else {
+                    bookingsList.innerHTML = '<p>No bookings found. Create your first booking!</p>';
+                }
+            } catch (error) {
+                bookingsList.innerHTML = '<p>Unable to load bookings. Please try again later.</p>';
+            }
+        }
+
+        // Handle form submission
+        document.getElementById('bookingForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formMessage = document.getElementById('formMessage');
+            const submitBtn = document.getElementById('submitBtn');
+            const destination = document.getElementById('destination').value;
+            const date = document.getElementById('date').value;
+            
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Booking...';
+            
+            try {
+                const response = await fetch(`${API_URL}/api/bookings`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ destination, date })
+                });
+                
+                if (response.ok) {
+                    formMessage.innerHTML = '<div class="message success">Booking created successfully!</div>';
+                    document.getElementById('bookingForm').reset();
+                    loadBookings();
+                } else {
+                    throw new Error('Failed to create booking');
+                }
+            } catch (error) {
+                formMessage.innerHTML = '<div class="message error">Failed to create booking. Please try again.</div>';
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = 'Book Now';
+            }
+        });
+
+        // Initialize the application
+        init();
+    </script>
+</body>
+</html>
