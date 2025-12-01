@@ -59,8 +59,6 @@ services:
   - type: web
     name: midnight-travel-frontend
     runtime: static
-    region: oregon
-    plan: free
     buildCommand: npm install && npm run build
     staticPublishPath: ./dist
     envVars:
