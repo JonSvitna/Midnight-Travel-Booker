@@ -4,9 +4,8 @@ services:
     name: midnight-travel-backend
     env: python
     region: oregon
-    buildCommand: pip install --upgrade pip && pip install -r requirements.txt
-    startCommand: gunicorn --bind 0.0.0.0:$PORT --workers 2 --timeout 120 'app:create_app()'
-    healthCheckPath: /health
+    buildCommand: cd backend && pip install --upgrade pip && pip install -r requirements.txt
+    startCommand: cd backend && gunicorn --bind 0.0.0.0:$PORT --workers 2 --timeout 120 'app:create_app()'
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0
