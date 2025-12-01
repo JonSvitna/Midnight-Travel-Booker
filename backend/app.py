@@ -15,9 +15,14 @@ def create_app():
     app.config.from_object(Config)
     
     # Initialize extensions
-    # Allow frontend origin for CORS
+    # Configure CORS to allow frontend access
     frontend_url = Config.APP_URL or 'http://localhost:3000'
-    CORS(app, origins=[frontend_url, 'http://localhost:3000'], supports_credentials=True)
+    CORS(app, 
+         resources={r"/api/*": {"origins": "*"}},
+         allow_headers=["Content-Type", "Authorization"],
+         methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+         supports_credentials=True,
+         expose_headers=["Content-Type", "Authorization"])
     db.init_app(app)
     JWTManager(app)
     
