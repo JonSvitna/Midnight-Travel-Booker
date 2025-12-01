@@ -39,6 +39,7 @@ This document tracks the implementation status of all planned features.
 - [x] JWT authentication with access & refresh tokens
 - [x] Password hashing with bcrypt
 - [x] Protected routes with authentication middleware
+- [x] Email verification (future enhancement - not in MVP)
 
 **Implementation:**
 - `backend/routes/auth.py` - Signup, login, refresh token, current user endpoints
@@ -52,7 +53,7 @@ This document tracks the implementation status of all planned features.
 
 ---
 
-## 3. Database & Models ✅ COMPLETE
+## 3. Subscription & Payment Integration ✅ COMPLETE
 
 - [x] User model with authentication fields
 - [x] Subscription model with Stripe integration
@@ -72,28 +73,51 @@ This document tracks the implementation status of all planned features.
 
 ---
 
-## 4. Payment & Subscription System ✅ COMPLETE
+## 4. Dashboard & Option Queuing ✅ COMPLETE
 
-- [x] Stripe integration for payments
-- [x] Three subscription tiers (Basic, Standard, Premium)
-- [x] Checkout session creation
-- [x] Webhook handling for subscription events
-- [x] Subscription status synchronization
-- [x] Payment failure handling
-- [x] Subscription cancellation
+- [x] Integrate Stripe for recurring subscriptions (backend)
+- [x] Create subscription plans (3 tiers) in Stripe dashboard
+- [x] Build payment flow UI (Stripe Checkout)
+- [x] Implement Stripe webhook for payment status updates
+- [x] Display current payment/subscription status in dashboard
 
 **Implementation:**
-- `backend/routes/subscriptions.py` - Stripe integration
-- `frontend/src/pages/Subscription.jsx` - Subscription UI
-- Webhook events handled:
-  - `checkout.session.completed`
-  - `customer.subscription.updated`
-  - `customer.subscription.deleted`
-  - `invoice.payment_failed`
+- `backend/routes/subscriptions.py` - Stripe API integration
+- `frontend/src/pages/Subscription.jsx` - Subscription selection & Stripe Checkout UI
+- `frontend/src/pages/Dashboard.jsx` - Shows active subscription status
+- Three tiers: Basic ($9.99/mo), Standard ($19.99/mo), Premium ($29.99/mo)
+- Webhook endpoint: `/api/subscriptions/webhook` handles:
+  - `checkout.session.completed` - Activates subscription after payment
+  - `customer.subscription.updated` - Syncs subscription changes
+  - `customer.subscription.deleted` - Handles cancellations
+  - `invoice.payment_failed` - Notifies on payment failures
 
 ---
 
-## 5. User Dashboard & Profile ✅ COMPLETE
+## 5. Database & Models ✅ COMPLETE
+
+- [x] Build dashboard overview UI (React)
+- [x] Create secure entry forms for login credentials (to travel site)
+- [x] Build form to queue/select travel options (primary/backup)
+- [x] Implement backend API for saving/retrieving option selection
+
+**Implementation:**
+- `frontend/src/pages/Dashboard.jsx` - Overview with statistics and recent bookings
+- `frontend/src/pages/Profile.jsx` - Encrypted credential management form
+- `frontend/src/pages/Bookings.jsx` - Create/manage travel booking requests
+- `backend/routes/users.py` - CRUD endpoints for encrypted credentials
+- `backend/routes/bookings.py` - CRUD endpoints for booking requests
+- `backend/models.py` - TravelCredential model (encrypted with Fernet)
+- `backend/models.py` - BookingRequest model (origin, destination, dates, max price)
+
+**Security Features:**
+- Travel site credentials encrypted at rest with Fernet (AES-128)
+- Only decrypted during automated booking execution
+- Never exposed in API responses or logs
+
+---
+
+## 6. User Dashboard & Profile ✅ COMPLETE
 
 - [x] Dashboard with booking statistics
 - [x] Recent bookings overview
@@ -112,7 +136,7 @@ This document tracks the implementation status of all planned features.
 
 ---
 
-## 6. Booking System ✅ COMPLETE
+## 7. Booking System ✅ COMPLETE
 
 - [x] Create booking requests
 - [x] View all bookings
@@ -132,7 +156,7 @@ This document tracks the implementation status of all planned features.
 
 ---
 
-## 7. Browser Automation ✅ COMPLETE
+## 8. Browser Automation ✅ COMPLETE
 
 - [x] Playwright integration
 - [x] Chromium browser automation
@@ -157,7 +181,7 @@ This document tracks the implementation status of all planned features.
 
 ---
 
-## 8. Scheduling System ✅ COMPLETE
+## 9. Scheduling System ✅ COMPLETE
 
 - [x] APScheduler integration
 - [x] Cron-based job scheduling
@@ -176,7 +200,7 @@ This document tracks the implementation status of all planned features.
 
 ---
 
-## 9. Notification System ✅ COMPLETE
+## 10. Notification System ✅ COMPLETE
 
 - [x] SendGrid email integration
 - [x] Booking success notifications
@@ -197,7 +221,7 @@ This document tracks the implementation status of all planned features.
 
 ---
 
-## 10. Admin Panel ✅ COMPLETE
+## 11. Admin Panel ✅ COMPLETE
 
 - [x] Admin authentication and authorization
 - [x] User management (view, update, deactivate)
@@ -216,7 +240,7 @@ This document tracks the implementation status of all planned features.
 
 ---
 
-## 11. Security Implementation ✅ COMPLETE
+## 12. Security Implementation ✅ COMPLETE
 
 - [x] Password hashing with bcrypt
 - [x] Credential encryption with Fernet (AES-128)
@@ -238,7 +262,7 @@ This document tracks the implementation status of all planned features.
 
 ---
 
-## 12. Frontend Application ✅ COMPLETE
+## 13. Frontend Application ✅ COMPLETE
 
 - [x] React 18.2 with Vite
 - [x] Tailwind CSS styling
@@ -271,7 +295,7 @@ This document tracks the implementation status of all planned features.
 
 ---
 
-## 13. API Documentation ✅ COMPLETE
+## 14. API Documentation ✅ COMPLETE
 
 - [x] Complete API reference
 - [x] All endpoint documentation
@@ -291,7 +315,7 @@ This document tracks the implementation status of all planned features.
 
 ---
 
-## 14. Deployment Configuration ✅ COMPLETE
+## 15. Deployment Configuration ✅ COMPLETE
 
 - [x] Docker containerization (backend & frontend)
 - [x] Docker Compose for local development
@@ -314,7 +338,7 @@ This document tracks the implementation status of all planned features.
 
 ---
 
-## 15. Testing ✅ BASIC COMPLETE
+## 16. Testing ✅ BASIC COMPLETE
 
 - [x] Backend API tests
 - [x] Authentication tests
@@ -335,7 +359,7 @@ This document tracks the implementation status of all planned features.
 
 ---
 
-## 16. Documentation ✅ COMPLETE
+## 17. Documentation ✅ COMPLETE
 
 - [x] README with project overview
 - [x] Setup guide for local development
