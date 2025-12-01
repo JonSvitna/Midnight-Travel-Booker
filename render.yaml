@@ -1,12 +1,11 @@
-services:
-  # PostgreSQL Database
-  - type: pserv
-    name: midnight-travel-db
+databases:
+  - name: midnight-travel-db
     plan: free
     region: oregon
     databaseName: midnight_travel
-    databaseUser: midnight_user
-    ipAllowList: []
+    user: midnight_user
+
+services:
 
   # Backend API
   - type: web
@@ -14,8 +13,10 @@ services:
     runtime: python
     region: oregon
     plan: free
+    rootDir: backend
     buildCommand: ./render-build.sh
     startCommand: gunicorn --bind 0.0.0.0:$PORT --workers 2 --timeout 120 'app:create_app()'
+    healthCheckPath: /health
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.0
@@ -53,8 +54,6 @@ services:
         value: https://example-travel-site.com
       - key: BOOKING_TIME
         value: "00:00:00"
-    rootDir: backend
-    healthCheckPath: /health
 
   # Frontend
   - type: web
