@@ -6,6 +6,12 @@ __pycache__/
 *.pyc
 *.pyo
 
+# Database
+*.db
+*.sqlite
+*.sqlite3
+backend/instance/
+
 # Environment files
 .env
 .env.local
