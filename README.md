@@ -2,6 +2,18 @@
 
 Automates Travel Site Booking
 
+## Screenshots
+
+View the application screenshots in the [`screenshots/`](screenshots/) directory. These showcase the complete user interface including:
+- Landing page with pricing tiers
+- Authentication (login/signup)
+- User dashboard with booking statistics
+- Bookings management
+- Subscription selection
+- Profile and settings
+
+See [screenshots/README.md](screenshots/README.md) for detailed descriptions of each screenshot.
+
 ## Project Structure
 
 ```
