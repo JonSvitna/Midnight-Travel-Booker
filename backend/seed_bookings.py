@@ -109,7 +109,15 @@ def generate_fake_bookings(app, user_id, num_bookings=20):
             
             # Schedule time at midnight on departure date
             scheduled_datetime = datetime.combine(departure_date, datetime.min.time())
-            scheduled_datetime = user_tz.localize(scheduled_datetime)
+            # Use localize with is_dst=None to handle DST transitions safely
+            try:
+                scheduled_datetime = user_tz.localize(scheduled_datetime, is_dst=None)
+            except pytz.exceptions.AmbiguousTimeError:
+                # If time is ambiguous (DST transition), use DST time
+                scheduled_datetime = user_tz.localize(scheduled_datetime, is_dst=True)
+            except pytz.exceptions.NonExistentTimeError:
+                # If time doesn't exist (DST gap), use the next valid time
+                scheduled_datetime = user_tz.localize(scheduled_datetime, is_dst=False)
             
             # Executed time for completed bookings
             executed_at = None
