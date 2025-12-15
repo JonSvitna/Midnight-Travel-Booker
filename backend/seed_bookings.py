@@ -23,7 +23,7 @@ DESTINATIONS = [
 ]
 
 def create_demo_user(app):
-    """Create or get a demo user for testing"""
+    """Create or get a demo user for testing, returns user_id"""
     with app.app_context():
         user = User.query.filter_by(email='demo@example.com').first()
         
@@ -62,7 +62,7 @@ def create_demo_user(app):
             db.session.commit()
             print(f"Updated subscription to active for demo user")
         
-        return user
+        return user.id
 
 def generate_fake_bookings(app, user_id, num_bookings=20):
     """Generate fake booking data"""
@@ -178,14 +178,8 @@ def main():
     print(f"Creating fake booking data...")
     print(f"Number of bookings to create: {num_bookings}")
     
-    # Create or get demo user and get the user_id
-    with app.app_context():
-        user = User.query.filter_by(email='demo@example.com').first()
-        if not user:
-            user = create_demo_user(app)
-            # Refresh to get the user after commit
-            user = User.query.filter_by(email='demo@example.com').first()
-        user_id = user.id
+    # Create or get demo user
+    user_id = create_demo_user(app)
     
     # Generate fake bookings
     generate_fake_bookings(app, user_id, num_bookings)
